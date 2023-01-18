@@ -1,0 +1,103 @@
+.el-menu {
+  border-bottom: none;
+  &-item {
+    border: none !important;
+    font-size: $medium;
+    font-family: 'Inter Tight', sans-serif;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background-color: unset !important;
+    &:hover {
+      background-color: unset !important;
+      opacity: 0.5 !important;
+    }
+    a {
+      text-decoration: none;
+      color: $text-primary;
+    }
+  }
+}
+.el-sub-menu {
+  &__title {
+    border: none !important;
+    font-size: $medium !important;
+    font-family: 'Inter Tight', sans-serif !important;
+    font-weight: 600 !important;
+    letter-spacing: 1px !important;
+    &:hover {
+      background-color: unset !important;
+      opacity: 0.5 !important;
+    }
+  }
+  .el-icon.el-sub-menu__icon-arrow {
+    right: 0;
+  }
+}
+
+// submenu list
+.el-menu--popup {
+  min-width: 150px !important;
+  text-align: center;
+  background-color: #f6f6f6 !important;
+  border: 1px solid #e6e6e6;
+  .el-menu-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    a {
+      font-weight: 400 !important;
+    }
+  }
+}
+
+.el-input {
+  &__wrapper {
+    border-radius: 0 !important;
+    border: 1px solid #ccc;
+    box-shadow: unset !important;
+  }
+  &__inner {
+    color: $text-primary !important;
+  }
+}
+
+// carousel
+.el-carousel,
+.el-carousel__container {
+  height: 100% !important;
+}
+
+// icon
+.el-icon {
+  vertical-align: middle;
+  color: $text-secondary;
+}
+
+// header mobile
+.header-mobile-wrapper {
+  .el-collapse-item__header {
+    display: none;
+  }
+  .el-collapse-item__content {
+    padding-bottom: 0;
+  }
+  .submenu {
+    .el-collapse {
+      border: none;
+      &-item__header {
+        display: inline-block;
+        color: $text-primary;
+        text-decoration: none;
+        font-size: $medium;
+        font-weight: 500;
+        border: none;
+        .el-icon.el-collapse-item__arrow {
+          margin-left: $space-xxs;
+        }
+      }
+      .el-collapse-item__wrap {
+        border-bottom: none;
+      }
+    }
+  }
+}
