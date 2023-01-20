@@ -4,6 +4,7 @@
     :type="type"
     :class="[className, bgColor]"
     @click="handleClick"
+    :style="width ? `width: ${width}` : ''"
   >
     <slot />
   </button>
@@ -27,6 +28,7 @@ interface ButtonProps {
   bgColor?: 'primary' | 'black' | 'none';
   className?: string;
   to?: string;
+  width?: string;
 }
 
 const props = withDefaults(defineProps<ButtonProps>(), {

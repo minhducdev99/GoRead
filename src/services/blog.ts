@@ -13,11 +13,6 @@ export const getAllBlogs = async () => {
     const res = await getDocs(collection(db, 'blogs'));
     const dataBlogs = [] as IBlog[];
     res.forEach((doc: any) => {
-        // if (doc.data().createdDate) {
-        //     doc.data().createdDate = doc.data().createdDate.toDate();
-        // }
-        // doc.data().id = doc.id;
-
         dataBlogs.push(doc.data());
     });
     return dataBlogs;

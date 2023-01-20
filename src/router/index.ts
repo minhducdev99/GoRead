@@ -4,6 +4,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import HomePage from '@/views/HomePage.vue';
 import LoginPage from '@/views/LoginPage.vue';
 import NotFoundPage from '@/views/NotFoundPage.vue';
+import AdminPage from '@/views/AdminPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,6 +22,14 @@ const routes: Array<RouteRecordRaw> = [
     component: HomePage,
     meta: {
       layout: DEFAULT_LAYOUT,
+    },
+  },
+  {
+    path: '/admin',
+    name: 'AdminPage',
+    component: AdminPage,
+    meta: {
+      layout: BLANK_LAYOUT,
       middleware: [auth],
     },
   },

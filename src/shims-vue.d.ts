@@ -7,3 +7,4 @@ declare module '*.vue' {
 
 declare module '@fortawesome/vue-fontawesome'
 declare module 'md5'
+declare module 'jsonwebtoken'
