@@ -24,17 +24,26 @@ export default {
 <script setup lang="ts">
 import { BlogsDummy } from '@/dummies/blogs-dummy';
 import BlogCard from '@/components/BlogCard.vue';
-import { computed, WritableComputedRef } from 'vue';
+import { computed, ref, toRaw, watch, WritableComputedRef } from 'vue';
 import { IBlog } from '@/types/Blog';
+import { useStore } from 'vuex';
 
-const listBlogs: WritableComputedRef<IBlog[]> = computed({
+const store = useStore();
+
+const listBlogs = ref<IBlog[]>([]);
+
+const blogsState: WritableComputedRef<IBlog[]> = computed({
   get() {
-    const list = BlogsDummy.reverse().slice(0, 5);
+    const list = store.getters.getBlogs;
     return list;
   },
   set(val) {
     //
   }
+});
+
+watch(blogsState, (newData) => {
+  listBlogs.value = toRaw(blogsState.value).slice(0, 5);
 });
 </script>
 

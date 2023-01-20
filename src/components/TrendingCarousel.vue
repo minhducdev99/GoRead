@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineProps } from 'vue';
+import { computed, defineProps, toRaw, watch, WritableComputedRef } from 'vue';
 export default {
   name: 'trending-carousel'
 };
@@ -39,6 +39,9 @@ import TrendingCarouselItem from '@/components/TrendingCarouselItem.vue';
 import { ITrendingCarouselItem } from '@/types/TrendingCarouselItem';
 import { chunks } from '@/utils/chunks';
 import { trendingCarouselData } from '@/dummies/trending-carousel-dummy';
+import { useStore } from 'vuex';
+import { IBlog } from '@/types/Blog';
+const store = useStore();
 
 let carousels = ref<ITrendingCarouselItem[][]>([]);
 
@@ -47,21 +50,36 @@ onBeforeMount(() => {
 });
 
 onMounted(() => {
-  handleResize();
   window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => [window.addEventListener('resize', handleResize)]);
 
+const blogsData: WritableComputedRef<IBlog[]> = computed({
+  get() {
+    return store.getters.getBlogs;
+  },
+  set(val) {
+    //
+  }
+});
+
 const handleResize = () => {
-  if (screen.width >= 750 && screen.width <= 1000) {
-    carousels.value = [...chunks(trendingCarouselData, 2)];
-  } else if (screen.width < 750) {
-    carousels.value = [...chunks(trendingCarouselData, 1)];
-  } else {
-    carousels.value = [...chunks(trendingCarouselData, 3)];
+  if (blogsData.value && toRaw(blogsData.value.length)) {
+    const carouselData = toRaw(blogsData.value);
+    if (screen.width >= 750 && screen.width <= 1000) {
+      carousels.value = [...chunks(carouselData, 2)];
+    } else if (screen.width < 750) {
+      carousels.value = [...chunks(carouselData, 1)];
+    } else {
+      carousels.value = [...chunks(carouselData, 3)];
+    }
   }
 };
+
+watch(blogsData, (newData) => {
+  handleResize();
+});
 </script>
 
 <style scoped lang="scss">

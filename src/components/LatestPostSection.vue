@@ -29,27 +29,43 @@
 
 <script lang="ts">
 import { Category } from '@/enums/category';
-import { computed, onMounted } from 'vue';
+import {
+  computed,
+  onMounted,
+  ref,
+  toRaw,
+  watch,
+  WritableComputedRef
+} from 'vue';
 import Button from '@/components/Button.vue';
 import BlogCard from '@/components/BlogCard.vue';
 import { CATEGORIES } from '@/contants/categories';
 import { BlogsDummy } from '@/dummies/blogs-dummy';
+import { useStore } from 'vuex';
+import { IBlog } from '@/types/Blog';
 export default {
   name: 'latest-post-section'
 };
 </script>
 
 <script lang="ts" setup>
-const listBlogs = computed({
+const store = useStore();
+
+const listBlogs = ref<IBlog[]>([]);
+
+const blogsState: WritableComputedRef<IBlog[]> = computed({
   get() {
-    return BlogsDummy;
+    const list = store.getters.getBlogs;
+    return list;
   },
   set(val) {
     //
   }
 });
 
-console.log(listBlogs.value);
+watch(blogsState, (newData) => {
+  listBlogs.value = toRaw(blogsState.value);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -58,6 +74,7 @@ console.log(listBlogs.value);
   display: grid;
   grid-template-columns: 0.4fr 1fr;
   grid-template-rows: auto;
+  place-content: space-between;
   @include mobile {
     grid-template-columns: 1fr;
   }
