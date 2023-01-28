@@ -9,11 +9,13 @@ import { ref, reactive, defineComponent, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import BlankLayout from '@/layouts/BlankLayout.vue';
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
+import DashBoardLayout from '@/layouts/DashboardLayout.vue';
 export default defineComponent({
   name: 'App',
   components: {
     BlankLayout,
-    DefaultLayout
+    DefaultLayout,
+    DashBoardLayout
   },
   setup() {
     const route = useRoute();

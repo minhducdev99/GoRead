@@ -1,10 +1,10 @@
-import { BLANK_LAYOUT, DEFAULT_LAYOUT } from '@/contants';
+import { BLANK_LAYOUT, DEFAULT_LAYOUT, DASH_BOARD_LAYOUT } from '@/contants';
 import { auth } from '@/middlewares/auth';
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import HomePage from '@/views/HomePage.vue';
 import LoginPage from '@/views/LoginPage.vue';
 import NotFoundPage from '@/views/NotFoundPage.vue';
-import AdminPage from '@/views/AdminPage.vue';
+import AdminBlogPage from '@/views/AdminBlogsPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,15 +26,26 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/admin',
-    name: 'AdminPage',
-    component: AdminPage,
+    name: 'Admin',
     meta: {
+      layout: DASH_BOARD_LAYOUT,
+      middleware: [auth],
+    },
+    children: [
+      {
+        path: 'blogs',
+        name: 'AdminBlogsPage',
+        component: AdminBlogPage,
+      }
+    ]
+  },
+
+  {
+    path: '/404', name: '404', component: NotFoundPage, meta: {
       layout: BLANK_LAYOUT,
       middleware: [auth],
     },
   },
-
-  { path: '/404', name: '404', component: NotFoundPage },
   { path: '/:catchAll(.*)', redirect: '/404' }
 
 ];

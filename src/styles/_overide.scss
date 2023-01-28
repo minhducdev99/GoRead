@@ -16,6 +16,14 @@
       color: $text-primary;
     }
   }
+  &--horizontal {
+    .el-icon.el-sub-menu__icon-arrow {
+      right: 0;
+    }
+  }
+  &--vertical {
+    height: 100%;
+  }
 }
 .el-sub-menu {
   &__title {
@@ -28,9 +36,6 @@
       background-color: unset !important;
       opacity: 0.5 !important;
     }
-  }
-  .el-icon.el-sub-menu__icon-arrow {
-    right: 0;
   }
 }
 
