@@ -55,14 +55,21 @@
           class="menu-sidebar"
           text-color="#fff"
         >
-          <el-menu-item>
+          <el-menu-item index="1">
             <router-link to="/admin/blogs">
               Blogs
             </router-link>
           </el-menu-item>
+          <el-menu-item index="2">
+            <router-link to="/admin/categories">
+              Categories
+            </router-link>
+          </el-menu-item>
         </el-menu>
       </div>
-      <slot />
+      <div class="layout-body-content">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
@@ -71,12 +78,15 @@
 import Button from '@/components/Button.vue';
 import { computed, ref } from '@vue/runtime-core';
 import { getUsername } from '@/helper';
+import { useRoute } from 'vue-router';
+import { watch } from 'vue';
 export default {
   name: 'dashboard-layout'
 };
 </script>
 
 <script lang="ts" setup>
+const route = useRoute();
 const openSidebar = ref(false);
 const username = computed({
   get() {
@@ -85,6 +95,10 @@ const username = computed({
   set(val) {
     //
   }
+});
+
+watch(route, () => {
+  openSidebar.value = false;
 });
 
 const handleSetting = () => {
@@ -99,6 +113,7 @@ const handleLogout = () => {
 <style lang="scss" scoped>
 @import '@/styles/_index';
 $height-header: 60px;
+$width-sidebar: 250px;
 
 .header {
   width: 100%;
@@ -157,7 +172,7 @@ $height-header: 60px;
 .layout-body {
   display: flex;
   .menu-wrapper {
-    width: 250px;
+    width: $width-sidebar;
     height: calc(100vh - $height-header);
     .menu-sidebar {
       a {
@@ -222,6 +237,14 @@ $height-header: 60px;
           height: 100%;
         }
       }
+    }
+  }
+  &-content {
+    width: 100%;
+    overflow: auto;
+    max-height: calc(100vh - $height-header);
+    @include desktop {
+      width: calc(100% - $width-sidebar);
     }
   }
 }

@@ -112,3 +112,9 @@
     }
   }
 }
+
+.admin-categories {
+  .el-table__inner-wrapper::before {
+    height: 0;
+  }
+}

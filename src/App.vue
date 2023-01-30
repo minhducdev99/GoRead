@@ -32,7 +32,7 @@ export default defineComponent({
       } else {
         layout.value = 'DefaultLayout';
       }
-      console.log(layout.value);
+      // console.log(layout.value);
     });
 
     return {

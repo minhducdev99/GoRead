@@ -5,6 +5,7 @@ import HomePage from '@/views/HomePage.vue';
 import LoginPage from '@/views/LoginPage.vue';
 import NotFoundPage from '@/views/NotFoundPage.vue';
 import AdminBlogPage from '@/views/AdminBlogsPage.vue';
+import AdminCategoriesPage from '@/views/AdminCategoriesPage.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -36,6 +37,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'blogs',
         name: 'AdminBlogsPage',
         component: AdminBlogPage,
+      },
+      {
+        path: 'categories',
+        name: 'AdminCategoriesPage',
+        component: AdminCategoriesPage
       }
     ]
   },
