@@ -80,7 +80,7 @@ const handleLogin = () => {
 
 <style lang="scss" scoped>
 @import '@/styles/_index';
-
+@import '@/styles/_overide';
 .login {
   &-page {
     width: 100%;

@@ -57,7 +57,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import '@/styles/_index';
-
+@import '@/styles/_overide';
 .admin-categories {
   padding: $space-md $space-xxl;
   h1 {

@@ -71,6 +71,13 @@
     height: unset;
   }
 }
+.el-textarea {
+  &__inner {
+    border: 1px solid #ccc !important;
+    box-shadow: unset !important;
+    color: $text-primary !important;
+  }
+}
 
 // carousel
 .el-carousel,

@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { IBlog } from '@/types/Blog';
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 export const getAllBlogs = async () => {
     const res = await getDocs(collection(db, 'blogs'));
@@ -34,3 +35,12 @@ export const watchBlogsCollectionChange = async () => {
         });
     });
 };
+
+export const uploadFile = async (file: File) => {
+    const storage = getStorage();
+    const storageRef = ref(storage, file.name);
+
+    return uploadBytes(storageRef, file).then((snapshot) => {
+        return snapshot
+    })
+} 

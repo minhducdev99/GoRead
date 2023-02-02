@@ -97,6 +97,7 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 @import '@/styles/_index';
+@import '@/styles/_overide';
 .home-page {
   padding: 60px 0;
   @include tablet {

@@ -87,6 +87,7 @@ const props = withDefaults(defineProps<BlogCardProps>(), {
 
 <style lang="scss" scoped>
 @import '@/styles/_index';
+
 .blog-card {
   width: 100%;
   text-decoration: none;

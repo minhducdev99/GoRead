@@ -1,14 +1,24 @@
 <template>
   <div class="admin-blogs" v-loading="loading">
     <h1>Blogs</h1>
-    <el-button class="btn-add" :icon="Plus" type="primary" plain
+    <el-button
+      class="btn-add"
+      :icon="Plus"
+      type="primary"
+      plain
+      @click="visibleAddBlogDialog = true"
       >Add blog</el-button
     >
     <el-table :data="tableData" style="width: 100%;">
       <el-table-column fixed type="index" width="80" label="#" />
       <el-table-column prop="id" label="ID" width="150" />
       <el-table-column prop="title" label="Title" width="120" />
-      <el-table-column prop="readMinute" label="Read minute" width="120" />
+      <el-table-column
+        prop="readMinute"
+        label="Read minute"
+        width="120"
+        center
+      />
       <el-table-column
         prop="shortDescription"
         label="Short description"
@@ -32,6 +42,10 @@
         </template>
       </el-table-column>
     </el-table>
+    <AddBlogDialog
+      :visible="visibleAddBlogDialog"
+      @close="visibleAddBlogDialog = false"
+    />
   </div>
 </template>
 
@@ -42,14 +56,16 @@ import moment from 'moment';
 import { useStore } from 'vuex';
 import { UPDATE_BLOGS_ACTION } from '@/store';
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
+import AddBlogDialog from '@/components/AddBlogDialog.vue';
 export default {
   name: 'Admin-blogs-page'
 };
 </script>
 
 <script lang="ts" setup>
-const loading = ref<boolean>(false);
 const store = useStore();
+const loading = ref<boolean>(false);
+const visibleAddBlogDialog = ref<boolean>(false);
 
 const getData = async () => {
   loading.value = true;
@@ -82,7 +98,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import '@/styles/_index';
-
+@import '@/styles/_overide';
 .admin-blogs {
   padding: $space-md $space-xxl;
   h1 {
