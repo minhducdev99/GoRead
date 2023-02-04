@@ -36,27 +36,43 @@
       </el-table-column>
       <el-table-column prop="createdDate" label="Created at" width="100" />
       <el-table-column fixed="right" width="90">
-        <template #default>
+        <template v-slot="{ row }">
           <el-button type="primary" :icon="Edit" size="small" circle />
-          <el-button type="danger" :icon="Delete" size="small" circle />
+          <el-button
+            type="danger"
+            :icon="Delete"
+            size="small"
+            circle
+            @click="handleShowConfirmDialog(row._idDoc)"
+          />
         </template>
       </el-table-column>
     </el-table>
     <AddBlogDialog
       :visible="visibleAddBlogDialog"
       @close="visibleAddBlogDialog = false"
+      @reloadData="getData"
+      v-if="visibleAddBlogDialog"
+    />
+    <ConfirmDialog
+      title="Are you sure you want to delete?"
+      :visible="visibleConfirmDialog"
+      @close="visibleConfirmDialog = false"
+      @confirm="handleDeleteBlog"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { computed, onMounted, ref, toRaw, watch } from 'vue';
-import { getAllBlogs } from '@/services/blog';
+import { deleteBlog, getBlogs, getImageUrl } from '@/services/blog';
 import moment from 'moment';
 import { useStore } from 'vuex';
 import { UPDATE_BLOGS_ACTION } from '@/store';
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import AddBlogDialog from '@/components/AddBlogDialog.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
+import { IBlog } from '@/types/Blog';
 export default {
   name: 'Admin-blogs-page'
 };
@@ -66,18 +82,27 @@ export default {
 const store = useStore();
 const loading = ref<boolean>(false);
 const visibleAddBlogDialog = ref<boolean>(false);
+const visibleConfirmDialog = ref<boolean>(false);
+const idBlogDelete = ref<string | null>(null);
 
 const getData = async () => {
   loading.value = true;
-  const data = await getAllBlogs();
-  const formatData = data.map((item) => {
-    return {
-      ...item,
-      createdDate: moment((item.createdDate as any).toDate()).format(
-        'DD/MM/YYYY HH:mm:ss'
-      )
-    };
-  });
+  const data = await getBlogs();
+
+  const formatData = await Promise.all(
+    data.map(async (item) => {
+      return {
+        ...item,
+        thumbUrl: item.thumbUrl.includes('https://')
+          ? item.thumbUrl
+          : await getImageUrl((item.thumbUrl as string) || ''),
+        createdDate: moment((item.createdDate as any).toDate()).format(
+          'DD/MM/YYYY HH:mm:ss'
+        )
+      };
+    })
+  );
+
   loading.value = false;
   store.dispatch(UPDATE_BLOGS_ACTION, formatData);
 };
@@ -90,6 +115,31 @@ const tableData = computed({
     //
   }
 });
+
+const handleShowConfirmDialog = (_idDoc: string) => {
+  // console.log(id);
+  idBlogDelete.value = _idDoc;
+  visibleConfirmDialog.value = true;
+};
+
+const handleDeleteBlog = async () => {
+  // console.log(idBlogDelete.value);
+  try {
+    visibleConfirmDialog.value = false;
+    loading.value = true;
+    await deleteBlog(idBlogDelete.value || '');
+    const listBlogs = store.getters.getBlogs;
+    const newList = listBlogs.filter(
+      (item: IBlog) => item._idDoc !== idBlogDelete.value
+    );
+    store.dispatch(UPDATE_BLOGS_ACTION, newList);
+    idBlogDelete.value = null;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
+};
 
 onMounted(() => {
   getData();

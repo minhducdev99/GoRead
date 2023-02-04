@@ -5,16 +5,24 @@ import {
     doc,
     onSnapshot,
     Timestamp,
+    setDoc,
+    addDoc,
+    deleteDoc,
 } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { IBlog } from '@/types/Blog';
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getMetadata, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
 
-export const getAllBlogs = async () => {
+export interface IBlogPayload extends IBlog {
+    createdDate: any
+}
+
+export const getBlogs = async () => {
     const res = await getDocs(collection(db, 'blogs'));
     const dataBlogs = [] as IBlog[];
     res.forEach((doc: any) => {
-        dataBlogs.push(doc.data());
+        dataBlogs.push({ ...doc.data(), _idDoc: doc.id });
     });
     return dataBlogs;
 };
@@ -43,4 +51,22 @@ export const uploadFile = async (file: File) => {
     return uploadBytes(storageRef, file).then((snapshot) => {
         return snapshot
     })
-} 
+}
+
+export const getImageUrl = (path: string) => {
+    const storage = getStorage();
+    const resizedRef = ref(storage, path);
+    return getDownloadURL(resizedRef).then((res) => {
+        return res;
+    });
+}
+
+export const addBlog = async (payload: IBlogPayload) => {
+    const docRef = await addDoc(collection(db, "blogs"), payload);
+    return docRef
+}
+
+export const deleteBlog = async (_idDoc: string) => {
+    const response = await deleteDoc(doc(db, "blogs", _idDoc));
+    return response;
+}

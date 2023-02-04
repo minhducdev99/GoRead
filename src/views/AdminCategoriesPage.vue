@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { getAllCategories } from '@/services/category';
+import { getCategories } from '@/services/category';
 import { useStore } from 'vuex';
 import { UPDATE_CATEGORIES_ACTION } from '@/store';
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
@@ -36,7 +36,7 @@ const loading = ref<boolean>(false);
 
 const getData = async () => {
   loading.value = true;
-  const data = await getAllCategories();
+  const data = await getCategories();
   loading.value = false;
   store.dispatch(UPDATE_CATEGORIES_ACTION, data);
 };

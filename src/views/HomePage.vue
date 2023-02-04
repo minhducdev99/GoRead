@@ -30,48 +30,70 @@ import { Category } from '@/enums/category';
 import FirstSection from '@/components/FirstSection.vue';
 import JoinGoReadSection from '@/components/JoinGoreadSection.vue';
 import LatestPostSection from '@/components/LatestPostSection.vue';
-import { getAllBlogs } from '@/services/blog';
+import { getBlogs } from '@/services/blog';
 import { computed, onMounted, onUnmounted } from '@vue/runtime-core';
 import { collection, onSnapshot, Timestamp } from 'firebase/firestore';
 import { db } from '@/firebase-config';
 import { useStore } from 'vuex';
-import { UPDATE_BLOGS_ACTION } from '@/store';
+import { UPDATE_BLOGS_ACTION, UPDATE_CATEGORIES_ACTION } from '@/store';
 import { ref, toRaw } from 'vue';
 import moment from 'moment';
+import { getCategories } from '@/services/category';
+import { IBlog } from '@/types/Blog';
 
 const store = useStore();
 const loading = ref<boolean>(false);
 
 let unsubscribe: any;
 
+const getAllBlogs = async () => {
+  try {
+    const data = await getBlogs();
+    const formatData = data.map((item: IBlog) => {
+      return {
+        ...item,
+        createdDate: moment((item.createdDate as any).toDate()).format(
+          'MMM DD, YYYY'
+        )
+      };
+    });
+    store.dispatch(UPDATE_BLOGS_ACTION, formatData);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getAllCategories = async () => {
+  try {
+    const data = await getCategories();
+    store.dispatch(UPDATE_CATEGORIES_ACTION, data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getData = async () => {
   loading.value = true;
-  const data = await getAllBlogs();
-  const formatData = data.map((item) => {
-    return {
-      ...item,
-      createdDate: moment((item.createdDate as any).toDate()).format(
-        'MMM DD, YYYY'
-      )
-    };
+  const promise1 = await getAllBlogs();
+  const promise2 = await getAllCategories();
+  Promise.all([promise1, promise2]).finally(() => {
+    loading.value = false;
   });
-  loading.value = false;
-  store.dispatch(UPDATE_BLOGS_ACTION, formatData);
 };
 
 const watchBlogsCollectionChange = async () => {
   const q = collection(db, 'blogs');
   unsubscribe = onSnapshot(q, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
-      if (change.type === 'added') {
-        console.log('New blog: ', change.doc.data());
-      }
-      if (change.type === 'modified') {
-        console.log('Modified blog: ', change.doc.data());
-      }
-      if (change.type === 'removed') {
-        console.log('Removed blog: ', change.doc.data());
-      }
+      // if (change.type === 'added') {
+      //   console.log('New blog: ', change.doc.data());
+      // }
+      // if (change.type === 'modified') {
+      //   console.log('Modified blog: ', change.doc.data());
+      // }
+      // if (change.type === 'removed') {
+      //   console.log('Removed blog: ', change.doc.data());
+      // }
     });
   });
 };
@@ -97,7 +119,7 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 @import '@/styles/_index';
-@import '@/styles/_overide';
+
 .home-page {
   padding: 60px 0;
   @include tablet {

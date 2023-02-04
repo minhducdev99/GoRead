@@ -1,13 +1,13 @@
 <template>
-  <div :class="['badge', badgeName]">
+  <div :class="['badge']" :style="{ backgroundColor: badgeInfo.color }">
     <span>
-      {{ badgeName }}
+      {{ badgeInfo.name }}
     </span>
   </div>
 </template>
 
 <script lang="ts">
-import { defineProps, WritableComputedRef } from 'vue';
+import { defineProps, withDefaults } from 'vue';
 export default {
   name: 'badge'
 };
@@ -15,30 +15,26 @@ export default {
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { Category } from '@/enums/category';
+import { ICategory } from '@/types/Category';
+import { useStore } from 'vuex';
 
-const props = defineProps<{ type: Category }>();
+interface BadgeProps {
+  type: number;
+}
+const props = withDefaults(defineProps<BadgeProps>(), {
+  type: 1
+});
 
-const badgeName: WritableComputedRef<string> = computed({
+const store = useStore();
+
+const badgeInfo = computed({
   get() {
-    let name = '';
-    switch (props.type) {
-      case Category.TRAVEL:
-        name = 'travel';
-        break;
-      case Category.PHOTO:
-        name = 'photo';
-        break;
-      case Category.BUSINESS:
-        name = 'business';
-        break;
-      case Category.TECH:
-        name = 'tech';
-        break;
-      default:
-        break;
-    }
-    return name;
+    const listCategories = store.getters.getCategories;
+    const badge = listCategories.find(
+      (item: ICategory) => item.id === props.type
+    );
+
+    return badge ? badge : { id: 0, color: '', name: '' };
   },
   set(val) {
     //
@@ -55,17 +51,5 @@ const badgeName: WritableComputedRef<string> = computed({
   font-weight: 500;
   text-transform: capitalize;
   width: max-content;
-  &.travel {
-    background-color: #4fd196;
-  }
-  &.photo {
-    background-color: #fd6537;
-  }
-  &.business {
-    background-color: #2c5cdd;
-  }
-  &.tech {
-    background-color: #6d3fd6;
-  }
 }
 </style>

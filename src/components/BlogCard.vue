@@ -51,12 +51,14 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { defineProps, withDefaults } from 'vue';
+import { computed, defineProps, withDefaults } from 'vue';
 import { IBlog } from '@/types/Blog';
 import { Category } from '@/enums/category';
 import { Calendar } from '@element-plus/icons-vue';
 import { Clock } from '@element-plus/icons-vue';
 import Badge from '@/components/Badge.vue';
+import { useStore } from 'vuex';
+import { ICategory } from '@/types/Category';
 
 interface BlogCardProps {
   title: string;
