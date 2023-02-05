@@ -37,7 +37,13 @@
       <el-table-column prop="createdDate" label="Created at" width="100" />
       <el-table-column fixed="right" width="90">
         <template v-slot="{ row }">
-          <el-button type="primary" :icon="Edit" size="small" circle />
+          <el-button
+            type="primary"
+            :icon="Edit"
+            size="small"
+            circle
+            @click="handleShowEditBlogDialog(row)"
+          />
           <el-button
             type="danger"
             :icon="Delete"
@@ -60,17 +66,25 @@
       @close="visibleConfirmDialog = false"
       @confirm="handleDeleteBlog"
     />
+    <EditBlogDialog
+      :visible="visibleEditBlogDialog"
+      @close="visibleEditBlogDialog = false"
+      @reloadData="getData"
+      v-if="visibleEditBlogDialog"
+      :data="editBlogProps"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { computed, onMounted, ref, toRaw, watch } from 'vue';
+import { computed, onMounted, reactive, ref, toRaw, watch } from 'vue';
 import { deleteBlog, getBlogs, getImageUrl } from '@/services/blog';
 import moment from 'moment';
 import { useStore } from 'vuex';
 import { UPDATE_BLOGS_ACTION } from '@/store';
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import AddBlogDialog from '@/components/AddBlogDialog.vue';
+import EditBlogDialog from '@/components/EditBlogDialog.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { IBlog } from '@/types/Blog';
 export default {
@@ -83,6 +97,8 @@ const store = useStore();
 const loading = ref<boolean>(false);
 const visibleAddBlogDialog = ref<boolean>(false);
 const visibleConfirmDialog = ref<boolean>(false);
+const visibleEditBlogDialog = ref<boolean>(false);
+const editBlogProps = ref<IBlog | null>(null);
 const idBlogDelete = ref<string | null>(null);
 
 const getData = async () => {
@@ -139,6 +155,12 @@ const handleDeleteBlog = async () => {
   } finally {
     loading.value = false;
   }
+};
+
+const handleShowEditBlogDialog = (blog: IBlog) => {
+  // console.log(toRaw(blog));
+  editBlogProps.value = toRaw(blog);
+  visibleEditBlogDialog.value = true;
 };
 
 onMounted(() => {
