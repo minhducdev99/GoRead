@@ -49,7 +49,7 @@
             :icon="Delete"
             size="small"
             circle
-            @click="handleShowConfirmDialog(row._idDoc)"
+            @click="handleShowConfirmDialog(row)"
           />
         </template>
       </el-table-column>
@@ -62,6 +62,8 @@
     />
     <ConfirmDialog
       title="Are you sure you want to delete?"
+      buttonType="danger"
+      buttonText="Delete"
       :visible="visibleConfirmDialog"
       @close="visibleConfirmDialog = false"
       @confirm="handleDeleteBlog"
@@ -78,7 +80,7 @@
 
 <script lang="ts">
 import { computed, onMounted, reactive, ref, toRaw, watch } from 'vue';
-import { deleteBlog, getBlogs, getImageUrl } from '@/services/blog';
+import { deleteBlog, deleteFile, getBlogs, getImageUrl } from '@/services/blog';
 import moment from 'moment';
 import { useStore } from 'vuex';
 import { UPDATE_BLOGS_ACTION } from '@/store';
@@ -99,28 +101,31 @@ const visibleAddBlogDialog = ref<boolean>(false);
 const visibleConfirmDialog = ref<boolean>(false);
 const visibleEditBlogDialog = ref<boolean>(false);
 const editBlogProps = ref<IBlog | null>(null);
-const idBlogDelete = ref<string | null>(null);
+const blogDelete = ref<IBlog | null>(null);
 
 const getData = async () => {
-  loading.value = true;
-  const data = await getBlogs();
+  try {
+    loading.value = true;
+    const data = await getBlogs();
 
-  const formatData = await Promise.all(
-    data.map(async (item) => {
-      return {
-        ...item,
-        thumbUrl: item.thumbUrl.includes('https://')
-          ? item.thumbUrl
-          : await getImageUrl((item.thumbUrl as string) || ''),
-        createdDate: moment((item.createdDate as any).toDate()).format(
-          'DD/MM/YYYY HH:mm:ss'
-        )
-      };
-    })
-  );
+    const formatData = await Promise.all(
+      data.map(async (item) => {
+        return {
+          ...item,
+          thumbUrl: await getImageUrl((item.thumbUrl as string) || ''),
+          createdDate: moment((item.createdDate as any).toDate()).format(
+            'DD/MM/YYYY - HH:mm:ss'
+          )
+        };
+      })
+    );
 
-  loading.value = false;
-  store.dispatch(UPDATE_BLOGS_ACTION, formatData);
+    store.dispatch(UPDATE_BLOGS_ACTION, formatData);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loading.value = false;
+  }
 };
 
 const tableData = computed({
@@ -132,9 +137,9 @@ const tableData = computed({
   }
 });
 
-const handleShowConfirmDialog = (_idDoc: string) => {
+const handleShowConfirmDialog = (blog: IBlog) => {
   // console.log(id);
-  idBlogDelete.value = _idDoc;
+  blogDelete.value = blog;
   visibleConfirmDialog.value = true;
 };
 
@@ -143,13 +148,24 @@ const handleDeleteBlog = async () => {
   try {
     visibleConfirmDialog.value = false;
     loading.value = true;
-    await deleteBlog(idBlogDelete.value || '');
+    await deleteBlog(blogDelete.value?._idDoc || '');
     const listBlogs = store.getters.getBlogs;
     const newList = listBlogs.filter(
-      (item: IBlog) => item._idDoc !== idBlogDelete.value
+      (item: IBlog) => item._idDoc !== blogDelete.value?._idDoc
     );
+
+    // Delete old thumb on storage
+    const _thumbUrl = blogDelete.value?.thumbUrl || '';
+    const startSubstringIndex = _thumbUrl.indexOf('o/');
+    const endSubstringIndex = _thumbUrl.indexOf('?alt');
+    const fileName = _thumbUrl.slice(
+      startSubstringIndex + 2,
+      endSubstringIndex
+    );
+    await deleteFile(fileName);
+
     store.dispatch(UPDATE_BLOGS_ACTION, newList);
-    idBlogDelete.value = null;
+    blogDelete.value = null;
   } catch (error) {
     console.log(error);
   } finally {

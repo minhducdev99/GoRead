@@ -328,3 +328,9 @@ onMounted(async () => {
   }
 }
 </style>
+
+<style>
+.el-loading-mask {
+  height: calc(100% + 100px);
+}
+</style>

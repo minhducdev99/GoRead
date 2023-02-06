@@ -17,6 +17,7 @@ import { db } from '@/firebase-config';
 import { IBlog } from '@/types/Blog';
 import { getStorage, ref, uploadBytes, getMetadata, getDownloadURL, deleteObject } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
 
 export interface IBlogPayload extends IBlog {
     createdDate: any
@@ -36,8 +37,14 @@ export const getBlogs = async () => {
     res.forEach((doc: any) => {
         dataBlogs.push({ ...doc.data(), _idDoc: doc.id });
     });
+
     return dataBlogs;
 };
+
+export const getBlogById = async (id: string) => {
+    const snap = await getDoc(doc(db, 'blogs', id));
+    return snap.data() as IBlog;
+}
 
 export const watchBlogsCollectionChange = async () => {
     const q = collection(db, 'blogs');

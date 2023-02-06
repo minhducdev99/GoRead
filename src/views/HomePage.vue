@@ -30,7 +30,7 @@ import { Category } from '@/enums/category';
 import FirstSection from '@/components/FirstSection.vue';
 import JoinGoReadSection from '@/components/JoinGoreadSection.vue';
 import LatestPostSection from '@/components/LatestPostSection.vue';
-import { getBlogs } from '@/services/blog';
+import { getBlogs, getImageUrl } from '@/services/blog';
 import { computed, onMounted, onUnmounted } from '@vue/runtime-core';
 import { collection, onSnapshot, Timestamp } from 'firebase/firestore';
 import { db } from '@/firebase-config';
@@ -49,14 +49,19 @@ let unsubscribe: any;
 const getAllBlogs = async () => {
   try {
     const data = await getBlogs();
-    const formatData = data.map((item: IBlog) => {
-      return {
-        ...item,
-        createdDate: moment((item.createdDate as any).toDate()).format(
-          'MMM DD, YYYY'
-        )
-      };
-    });
+
+    const formatData = await Promise.all(
+      data.map(async (item) => {
+        return {
+          ...item,
+          thumbUrl: await getImageUrl((item.thumbUrl as string) || ''),
+          createdDate: moment((item.createdDate as any).toDate()).format(
+            'MMM DD, YYYY'
+          )
+        };
+      })
+    );
+
     store.dispatch(UPDATE_BLOGS_ACTION, formatData);
   } catch (error) {
     console.log(error);

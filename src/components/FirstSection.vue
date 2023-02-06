@@ -10,6 +10,7 @@
         :shortDescription="item.shortDescription"
         :showShortDesc="!index"
         :content="item.content"
+        :to="`/blogs/${item._idDoc}`"
       />
     </div>
   </div>
@@ -44,6 +45,7 @@ const blogsState: WritableComputedRef<IBlog[]> = computed({
 
 watch(blogsState, (newData) => {
   listBlogs.value = toRaw(blogsState.value).slice(0, 5);
+  console.log(listBlogs);
 });
 </script>
 

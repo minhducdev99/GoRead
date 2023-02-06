@@ -5,11 +5,10 @@
     @close="handleClose"
     align-center
   >
-    <span>Open the dialog from the center from the screen</span>
     <template #footer>
       <span class="dialog-footer">
-        <el-button type="primary" @click="handleConfirm">
-          Confirm
+        <el-button :type="buttonType" @click="handleConfirm">
+          {{ buttonText }}
         </el-button>
       </span>
     </template>
@@ -26,12 +25,16 @@ export default {
 interface ConfimDialogProps {
   visible: boolean;
   title: string;
+  buttonType?: 'primary' | 'danger';
+  buttonText?: string;
 }
 import { computed, ref, withDefaults, defineProps, defineEmits } from 'vue';
 
 const props = withDefaults(defineProps<ConfimDialogProps>(), {
   visible: false,
-  title: 'Confirm Dialog'
+  title: 'Confirm Dialog',
+  buttonType: 'primary',
+  buttonText: 'Confirm'
 });
 const emits = defineEmits(['confirm', 'close']);
 

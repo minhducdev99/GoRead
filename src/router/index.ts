@@ -26,6 +26,21 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/blogs',
+    name: 'Blogs',
+    // component: HomePage,
+    meta: {
+      layout: DEFAULT_LAYOUT,
+    },
+    children: [
+      {
+        path: ':id',
+        name: 'blog-detail',
+        component: () => import('@/views/BlogDetailPage.vue')
+      }
+    ]
+  },
+  {
     path: '/admin',
     name: 'Admin',
     meta: {

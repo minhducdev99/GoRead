@@ -72,4 +72,8 @@ const emits = defineEmits(['change']);
 .el-upload {
   aspect-ratio: 5/3;
 }
+.el-upload img {
+  width: 100%;
+  height: 100%;
+}
 </style>

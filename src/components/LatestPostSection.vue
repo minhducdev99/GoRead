@@ -22,6 +22,7 @@
         :shortDescription="item.shortDescription"
         :showShortDesc="true"
         :content="item.content"
+        :to="`/blogs/${item._idDoc}`"
       />
     </div>
   </div>

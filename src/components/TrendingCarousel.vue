@@ -57,7 +57,7 @@ onUnmounted(() => [window.addEventListener('resize', handleResize)]);
 
 const blogsData: WritableComputedRef<IBlog[]> = computed({
   get() {
-    return store.getters.getBlogs;
+    return toRaw(store.getters.getBlogs).slice(0, 12);
   },
   set(val) {
     //
