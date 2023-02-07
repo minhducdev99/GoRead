@@ -28,7 +28,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/blogs',
     name: 'Blogs',
-    // component: HomePage,
+    component: () => import('@/views/BlogsPage.vue'),
     meta: {
       layout: DEFAULT_LAYOUT,
     },

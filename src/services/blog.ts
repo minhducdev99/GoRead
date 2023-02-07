@@ -41,6 +41,16 @@ export const getBlogs = async () => {
     return dataBlogs;
 };
 
+export const filterBlogsByCategory = async (categoryId: number) => {
+    const q = query(collection(db, "blogs"), where("type", "==", categoryId));
+    const res = await getDocs(q);
+    const dataBlogs = [] as IBlog[];
+    res.forEach((doc: any) => {
+        dataBlogs.push({ ...doc.data(), _idDoc: doc.id });
+    });
+    return dataBlogs.sort((a: any, b: any) => b.createdDate - a.createdDate);
+};
+
 export const getBlogById = async (id: string) => {
     const snap = await getDoc(doc(db, 'blogs', id));
     return snap.data() as IBlog;

@@ -56,7 +56,7 @@ const getAllBlogs = async () => {
           ...item,
           thumbUrl: await getImageUrl((item.thumbUrl as string) || ''),
           createdDate: moment((item.createdDate as any).toDate()).format(
-            'MMM DD, YYYY'
+            'DD/MM/YYYY - HH:mm:ss'
           )
         };
       })

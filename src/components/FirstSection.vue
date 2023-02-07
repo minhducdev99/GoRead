@@ -45,7 +45,6 @@ const blogsState: WritableComputedRef<IBlog[]> = computed({
 
 watch(blogsState, (newData) => {
   listBlogs.value = toRaw(blogsState.value).slice(0, 5);
-  console.log(listBlogs);
 });
 </script>
 

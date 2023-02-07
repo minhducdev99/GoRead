@@ -3,9 +3,11 @@
     <div class="latest-post-sidebar">
       <h2>Latest Post</h2>
       <Button
-        v-for="(item, index) in CATEGORIES"
-        :key="index"
+        v-for="item in listCategories"
+        :key="item.id"
         class="btn-category"
+        type="link"
+        :to="`/blogs?categoryId=${item.id}`"
       >
         {{ item.name }}
       </Button>
@@ -64,6 +66,15 @@ const blogsState: WritableComputedRef<IBlog[]> = computed({
   }
 });
 
+const listCategories = computed({
+  get() {
+    return store.getters.getCategories;
+  },
+  set(val) {
+    //
+  }
+});
+
 watch(blogsState, (newData) => {
   listBlogs.value = toRaw(blogsState.value);
 });
@@ -100,11 +111,11 @@ watch(blogsState, (newData) => {
   }
   &-list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: auto;
     grid-gap: $space-md;
     @include tablet {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, 1fr);
     }
     @include mobile {
       grid-template-columns: 1fr;

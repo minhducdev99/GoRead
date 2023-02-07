@@ -142,7 +142,7 @@ const props = withDefaults(defineProps<BlogCardProps>(), {
   &.show-short {
     @include tablet {
       h4 {
-        font-size: $very-large;
+        font-size: $large;
         line-height: 1.4;
       }
     }
