@@ -10,7 +10,7 @@
       active-text-color="#040404"
     >
       <el-menu-item
-        v-for="(menu, index) in Menu"
+        v-for="(menu, index) in menuData"
         :key="index"
         :index="`${index + 1}`"
       >
@@ -41,13 +41,53 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref, watch, WritableComputedRef } from 'vue';
 import { Menu } from '@/contants/menu';
+import { useStore } from 'vuex';
+import { ICategory } from '@/types/Category';
+import { IMenu } from '@/types/Menu';
 
+const store = useStore();
 const activeIndex = ref('1');
+const menuData = ref<IMenu[]>(Menu);
 const handleSelect = (key: string, keyPath: string[]) => {
   console.log(key, keyPath);
 };
+
+const listCategories: WritableComputedRef<ICategory[]> = computed({
+  get() {
+    return store.getters.getCategories;
+  },
+  set(val) {
+    //
+  }
+});
+
+watch(listCategories, () => {
+  // set menu categories
+  if (listCategories.value.length > 0) {
+    const menuCategory = menuData.value.find(
+      (item) => item.title === 'Catetogries'
+    );
+    const subMenuCategories: IMenu[] = listCategories.value.map(
+      (item: ICategory) => {
+        return {
+          title: item.name,
+          to: `/blogs?categoryId=${item.id}`
+        };
+      }
+    );
+    if (menuCategory) {
+      menuCategory.subMenu = subMenuCategories;
+      // console.log(menuCategory);
+      const indexMenuCategory = menuData.value.findIndex(
+        (item) => item.title === 'Catetogries'
+      );
+      menuData.value[indexMenuCategory] = menuCategory;
+      // console.log(menuData.value);
+    }
+  }
+});
 </script>
 
 <style scoped lang="scss">

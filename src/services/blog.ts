@@ -41,8 +41,18 @@ export const getBlogs = async () => {
     return dataBlogs;
 };
 
-export const filterBlogsByCategory = async (categoryId: number) => {
+export const getBlogsByCategory = async (categoryId: number) => {
     const q = query(collection(db, "blogs"), where("type", "==", categoryId));
+    const res = await getDocs(q);
+    const dataBlogs = [] as IBlog[];
+    res.forEach((doc: any) => {
+        dataBlogs.push({ ...doc.data(), _idDoc: doc.id });
+    });
+    return dataBlogs.sort((a: any, b: any) => b.createdDate - a.createdDate);
+};
+
+export const getBlogsByTitle = async (searchText: string) => {
+    const q = query(collection(db, "blogs"), where("titleQuery", ">=", searchText.toLowerCase()), where("titleQuery", "<=", searchText + "\uf8ff"));
     const res = await getDocs(q);
     const dataBlogs = [] as IBlog[];
     res.forEach((doc: any) => {
@@ -97,7 +107,7 @@ export const getImageUrl = (path: string) => {
 }
 
 export const addBlog = async (payload: IBlogPayload) => {
-    const docRef = await addDoc(collection(db, "blogs"), payload);
+    const docRef = await addDoc(collection(db, "blogs"), { ...payload, titleQuery: payload.title.toLowerCase() });
     return docRef
 }
 

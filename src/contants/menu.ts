@@ -12,24 +12,6 @@ export const Menu: IMenu[] = [
     {
         title: 'Catetogries',
         to: '/',
-        subMenu: [
-            {
-                title: 'Travel',
-                to: 'categories/travel'
-            },
-            {
-                title: 'Photo',
-                to: 'categories/photo'
-            },
-            {
-                title: 'Business',
-                to: 'categories/business'
-            },
-            {
-                title: 'Tech',
-                to: 'categories/tech'
-            }
-        ]
     },
     {
         title: 'Join GoRead+',

@@ -7,9 +7,14 @@
         size="large"
         placeholder="Search..."
         :suffix-icon="Search"
+        @keyup.enter="
+          router.push(inputSearch ? `/blogs?search=${inputSearch}` : '/')
+        "
       />
     </div>
-    <Button type="button" @click="onClickButton">Search</Button>
+    <Button type="link" :to="inputSearch ? `/blogs?search=${inputSearch}` : '/'"
+      >Search</Button
+    >
   </div>
 </template>
 
@@ -20,15 +25,21 @@ export default {
 </script>
 
 <script lang="ts" setup>
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, ref, watch } from 'vue';
 import Button from '@/components/Button.vue';
 import { Search } from '@element-plus/icons-vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const router = useRouter();
+const route = useRoute();
 
 const inputSearch = ref('');
 
-const onClickButton = () => {
-  console.log('click !!!');
-};
+watch(route, () => {
+  if (!route.query.search) {
+    inputSearch.value = '';
+  }
+});
 </script>
 
 <style scoped lang="scss">

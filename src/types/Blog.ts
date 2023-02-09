@@ -11,4 +11,5 @@ export interface IBlog {
     thumbUrl: string;
     shortDescription: string;
     content: string;
+    titleQuery?: string;
 }

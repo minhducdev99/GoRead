@@ -44,7 +44,11 @@ import BlogCard from '@/components/BlogCard.vue';
 import { ICategory } from '@/types/Category';
 import { computed, onMounted, ref, watch } from 'vue';
 import { getCategories } from '@/services/category';
-import { filterBlogsByCategory, getImageUrl } from '@/services/blog';
+import {
+  getBlogsByCategory,
+  getBlogsByTitle,
+  getImageUrl
+} from '@/services/blog';
 import moment from 'moment';
 import { IBlog } from '@/types/Blog';
 import { useStore } from 'vuex';
@@ -64,6 +68,15 @@ const loading = ref<boolean>(false);
 const id = computed({
   get() {
     return route.params.id;
+  },
+  set(val) {
+    //
+  }
+});
+
+const search = computed({
+  get() {
+    return route.query.search;
   },
   set(val) {
     //
@@ -97,9 +110,9 @@ const getAllCategories = async () => {
   }
 };
 
-const filterBlogs = async () => {
+const filterBlogsByCategory = async () => {
   try {
-    const data = await filterBlogsByCategory(Number(categoryActive.value));
+    const data = await getBlogsByCategory(Number(categoryActive.value));
     const formatData = await Promise.all(
       data.map(async (item) => {
         return {
@@ -118,11 +131,33 @@ const filterBlogs = async () => {
   }
 };
 
+const filterBlogsByTitle = async () => {
+  try {
+    const data = await getBlogsByTitle(search.value as string);
+    const formatData = await Promise.all(
+      data.map(async (item) => {
+        return {
+          ...item,
+          thumbUrl: await getImageUrl((item.thumbUrl as string) || ''),
+          createdDate: moment((item.createdDate as any).toDate()).format(
+            'DD/MM/YYYY - HH:mm:ss'
+          )
+        } as IBlog;
+      })
+    );
+    listBlogs.value = formatData;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getData = async () => {
   try {
     loading.value = true;
-    const promise1 = await getAllCategories();
-    const promise2 = await filterBlogs();
+    await getAllCategories();
+    categoryActive.value
+      ? await filterBlogsByCategory()
+      : await filterBlogsByTitle();
   } catch (error) {
     console.log(error);
   } finally {
@@ -131,11 +166,15 @@ const getData = async () => {
 };
 
 watch(route, () => {
-  getData();
+  if (!id.value) {
+    getData();
+  }
 });
 
 onMounted(() => {
-  getData();
+  if (!id.value) {
+    getData();
+  }
 });
 </script>
 
