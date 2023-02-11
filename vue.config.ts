@@ -10,5 +10,8 @@ module.exports = {
         plugins: [
             new Dotenv(dotenvArgs)
         ]
-    }
+    },
+    publicPath: process.env.NODE_ENV === 'production'
+        ? '/goread/'
+        : '/'
 };
