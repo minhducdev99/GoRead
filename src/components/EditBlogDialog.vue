@@ -279,31 +279,6 @@ const handleSubmit = async (formEl: FormInstance | undefined) => {
       } finally {
         loading.value = false;
       }
-      //   try {
-      //     // console.log('submit!', toRaw(formValues), thumbnail.value);
-      //     loading.value = true;
-      //     await uploadFile(thumbnail.value as File);
-
-      //     const { title, category, content, minute, shortDesc } = formValues;
-      //     const payload: IBlogPayload = {
-      //       _idDoc: '',
-      //       id: uuidv4(),
-      //       title: title,
-      //       type: +category,
-      //       createdDate: serverTimestamp(),
-      //       readMinute: +minute,
-      //       thumbUrl: thumbnail.value?.name || '',
-      //       shortDescription: shortDesc,
-      //       content
-      //     };
-      //     await addBlog(payload);
-      //     handleClose();
-      //     reloadData();
-      //   } catch (error) {
-      //     console.log(error);
-      //   } finally {
-      //     loading.value = false;
-      //   }
     } else {
       console.log('error submit!', fields);
     }

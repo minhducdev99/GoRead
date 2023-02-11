@@ -117,7 +117,7 @@ export const deleteBlog = async (_idDoc: string) => {
 }
 
 export const updateBlog = async (payload: IBlogPayload) => {
-    const { _idDoc, title, type, readMinute, thumbUrl, shortDescription, content } = payload;
+    const { _idDoc = '', title, type, readMinute, thumbUrl, shortDescription, content } = payload;
     const blogRef = doc(db, 'blogs', _idDoc);
     const res = await updateDoc(blogRef, {
         title,

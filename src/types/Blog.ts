@@ -2,7 +2,7 @@ import { Category } from '@/enums/category';
 import { FieldValue, Timestamp } from 'firebase/firestore';
 
 export interface IBlog {
-    _idDoc: string;
+    _idDoc?: string;
     id: string | number;
     title: string;
     type: Category | number;

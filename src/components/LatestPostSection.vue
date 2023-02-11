@@ -58,7 +58,7 @@ const listBlogs = ref<IBlog[]>([]);
 
 const blogsState: WritableComputedRef<IBlog[]> = computed({
   get() {
-    const list = store.getters.getBlogs;
+    const list = store.getters.getBlogs.slice(0, 12);
     return list;
   },
   set(val) {
