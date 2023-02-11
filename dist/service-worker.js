@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.4a4feeb3ba97397beb6f9868d6563108.js"
+  "/precache-manifest.79785963e03d7a471a4d0f43eb7cd0a0.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "goread"});
