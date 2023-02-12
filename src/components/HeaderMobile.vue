@@ -14,7 +14,7 @@
         </span>
       </div>
     </header>
-    <el-collapse>
+    <el-collapse :accordion="true">
       <el-collapse-item>
         <ul class="menu-list">
           <li class="filter">
@@ -22,7 +22,7 @@
           </li>
 
           <li
-            v-for="(menu, index) in Menu"
+            v-for="(menu, index) in menuData"
             :key="index"
             :class="menu.subMenu ? 'submenu' : 'menu-item'"
           >
@@ -60,8 +60,15 @@ export default {
 <script lang="ts" setup>
 import Button from '@/components/Button.vue';
 import HeaderFilter from '@/components/HeaderFilter.vue';
-import { ref } from 'vue';
+import { computed, ref, watch, WritableComputedRef } from 'vue';
 import { Menu } from '@/contants/menu';
+import { useStore } from 'vuex';
+import { IMenu } from '@/types/Menu';
+import { ICategory } from '@/types/Category';
+import { useRoute } from 'vue-router';
+
+const store = useStore();
+const menuData = ref<IMenu[]>(Menu);
 
 const handleExpandMenu = () => {
   const collapseHeader: any = document.querySelector(
@@ -69,6 +76,41 @@ const handleExpandMenu = () => {
   );
   collapseHeader.click();
 };
+
+const listCategories: WritableComputedRef<ICategory[]> = computed({
+  get() {
+    return store.getters.getCategories;
+  },
+  set(val) {
+    //
+  }
+});
+
+watch(listCategories, () => {
+  // set menu categories
+  if (listCategories.value.length > 0) {
+    const menuCategory = menuData.value.find(
+      (item) => item.title === 'Catetogries'
+    );
+    const subMenuCategories: IMenu[] = listCategories.value.map(
+      (item: ICategory) => {
+        return {
+          title: item.name,
+          to: `/blogs?categoryId=${item.id}`
+        };
+      }
+    );
+    if (menuCategory) {
+      menuCategory.subMenu = subMenuCategories;
+      // console.log(menuCategory);
+      const indexMenuCategory = menuData.value.findIndex(
+        (item) => item.title === 'Catetogries'
+      );
+      menuData.value[indexMenuCategory] = menuCategory;
+      // console.log(menuData.value);
+    }
+  }
+});
 </script>
 
 <style lang="scss" scoped>
