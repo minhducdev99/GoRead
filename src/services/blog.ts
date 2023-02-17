@@ -125,7 +125,8 @@ export const updateBlog = async (payload: IBlogPayload) => {
         readMinute,
         thumbUrl,
         shortDescription,
-        content
+        content,
+        titleQuery: title.toLowerCase()
     });
     return res;
 }
