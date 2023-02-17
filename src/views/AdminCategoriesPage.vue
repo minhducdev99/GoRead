@@ -56,6 +56,7 @@
     buttonType="danger"
     buttonText="Delete"
     :visible="visibleConfirmDialog"
+    :size="500"
     @close="visibleConfirmDialog = false"
     @confirm="handleDeleteCategory"
   />

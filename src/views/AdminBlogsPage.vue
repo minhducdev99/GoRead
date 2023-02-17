@@ -24,7 +24,11 @@
         label="Short description"
         width="600"
       />
-      <el-table-column prop="type" label="Type" width="120" />
+      <el-table-column prop="type" label="Type" width="120">
+        <template v-slot="{ row }">
+          <p>{{ getNameCategory(row.type) }}</p>
+        </template>
+      </el-table-column>
       <el-table-column prop="thumbUrl" label="Thumbnail" width="150">
         <template v-slot="{ row }">
           <el-image
@@ -65,6 +69,7 @@
       buttonType="danger"
       buttonText="Delete"
       :visible="visibleConfirmDialog"
+      :size="500"
       @close="visibleConfirmDialog = false"
       @confirm="handleDeleteBlog"
     />
@@ -79,16 +84,26 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, reactive, ref, toRaw, watch } from 'vue';
+import {
+  computed,
+  onMounted,
+  reactive,
+  ref,
+  toRaw,
+  watch,
+  WritableComputedRef
+} from 'vue';
 import { deleteBlog, deleteFile, getBlogs, getImageUrl } from '@/services/blog';
 import moment from 'moment';
 import { useStore } from 'vuex';
-import { UPDATE_BLOGS_ACTION } from '@/store';
+import { UPDATE_BLOGS_ACTION, UPDATE_CATEGORIES_ACTION } from '@/store';
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import AddBlogDialog from '@/components/AddBlogDialog.vue';
 import EditBlogDialog from '@/components/EditBlogDialog.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { IBlog } from '@/types/Blog';
+import { getCategories } from '@/services/category';
+import { ICategory } from '@/types/Category';
 export default {
   name: 'Admin-blogs-page'
 };
@@ -103,24 +118,36 @@ const visibleEditBlogDialog = ref<boolean>(false);
 const editBlogProps = ref<IBlog | null>(null);
 const blogDelete = ref<IBlog | null>(null);
 
+const getListBlogs = async () => {
+  const data = await getBlogs();
+  const formatData = await Promise.all(
+    data.map(async (item) => {
+      return {
+        ...item,
+        thumbUrl: await getImageUrl((item.thumbUrl as string) || ''),
+        createdDate: moment((item.createdDate as any).toDate()).format(
+          'DD/MM/YYYY - HH:mm:ss'
+        )
+      };
+    })
+  );
+  store.dispatch(UPDATE_BLOGS_ACTION, formatData);
+};
+
+const getListCategories = async () => {
+  try {
+    const data = await getCategories();
+    store.dispatch(UPDATE_CATEGORIES_ACTION, data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getData = async () => {
   try {
     loading.value = true;
-    const data = await getBlogs();
-
-    const formatData = await Promise.all(
-      data.map(async (item) => {
-        return {
-          ...item,
-          thumbUrl: await getImageUrl((item.thumbUrl as string) || ''),
-          createdDate: moment((item.createdDate as any).toDate()).format(
-            'DD/MM/YYYY - HH:mm:ss'
-          )
-        };
-      })
-    );
-
-    store.dispatch(UPDATE_BLOGS_ACTION, formatData);
+    await getListCategories();
+    await getListBlogs();
   } catch (error) {
     console.log(error);
   } finally {
@@ -128,11 +155,20 @@ const getData = async () => {
   }
 };
 
-const tableData = computed({
+const tableData: WritableComputedRef<IBlog[]> = computed({
   get() {
     return store.getters.getBlogs;
   },
   set(value) {
+    //
+  }
+});
+
+const categories: WritableComputedRef<ICategory[]> = computed({
+  get() {
+    return store.getters.getCategories;
+  },
+  set(val) {
     //
   }
 });
@@ -177,6 +213,14 @@ const handleShowEditBlogDialog = (blog: IBlog) => {
   // console.log(toRaw(blog));
   editBlogProps.value = toRaw(blog);
   visibleEditBlogDialog.value = true;
+};
+
+const getNameCategory = (id: number): string => {
+  let name = '';
+  if (categories.value) {
+    name = categories.value.find((item) => item.id === id)?.name || '';
+  }
+  return name;
 };
 
 onMounted(() => {

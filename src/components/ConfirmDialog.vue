@@ -3,6 +3,7 @@
     v-model="visibleDialog"
     :title="props.title"
     @close="handleClose"
+    :width="size ? size : ''"
     align-center
   >
     <template #footer>
@@ -27,6 +28,7 @@ interface ConfimDialogProps {
   title: string;
   buttonType?: 'primary' | 'danger';
   buttonText?: string;
+  size?: number;
 }
 import { computed, ref, withDefaults, defineProps, defineEmits } from 'vue';
 

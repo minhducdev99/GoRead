@@ -39,7 +39,7 @@
           <UploadImage @change="handleChangeFile" />
         </el-form-item>
         <el-form-item label="Content" required style="width: 100%;">
-          <div style="height: 500px;">
+          <div style="height: 500px; width: 100%;">
             <quill-editor
               theme="snow"
               toolbar="full"
@@ -220,6 +220,6 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/styles/_index';
 </style>

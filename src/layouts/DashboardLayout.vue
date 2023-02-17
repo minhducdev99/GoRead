@@ -25,7 +25,10 @@
                   </div>
                 </el-dropdown-item>
                 <el-dropdown-item>
-                  <div class="user-action-item" @click="handleLogout">
+                  <div
+                    class="user-action-item"
+                    @click="visibleConfirmDialog = true"
+                  >
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Logout</span>
                   </div>
@@ -72,13 +75,23 @@
       </div>
     </div>
   </div>
+  <ConfirmDialog
+    title="Do you want to logout?"
+    buttonType="danger"
+    buttonText="Logout"
+    :size="500"
+    :visible="visibleConfirmDialog"
+    @close="visibleConfirmDialog = false"
+    @confirm="handleLogout"
+  />
 </template>
 
 <script lang="ts">
 import Button from '@/components/Button.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import { computed, ref } from '@vue/runtime-core';
 import { getUsername } from '@/helper';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { watch } from 'vue';
 export default {
   name: 'dashboard-layout'
@@ -87,7 +100,9 @@ export default {
 
 <script lang="ts" setup>
 const route = useRoute();
+const router = useRouter();
 const openSidebar = ref(false);
+const visibleConfirmDialog = ref(false);
 const username = computed({
   get() {
     return getUsername();
@@ -106,7 +121,8 @@ const handleSetting = () => {
 };
 
 const handleLogout = () => {
-  console.log('logout');
+  localStorage.removeItem('userInfo');
+  router.push('/login');
 };
 </script>
 
