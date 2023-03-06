@@ -132,6 +132,9 @@ onMounted(() => {
     :deep ul {
       padding-left: $space-md;
     }
+    :deep ol {
+      padding-left: $space-md;
+    }
   }
 }
 </style>
