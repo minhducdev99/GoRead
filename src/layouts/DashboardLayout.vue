@@ -139,6 +139,9 @@ $width-sidebar: 250px;
   justify-content: space-between;
   align-items: center;
   padding: $space-md;
+  @include mobile {
+    padding: $space-md $space-sm;
+  }
   &-left {
     .logo {
       width: 120px;

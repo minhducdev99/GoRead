@@ -143,6 +143,12 @@ onMounted(() => {
 @import '@/styles/_overide';
 .admin-categories {
   padding: $space-md $space-xxl;
+  @include mobile {
+    padding: $space-md $space-sm;
+    :deep .cell {
+      font-size: $small !important;
+    }
+  }
   h1 {
     margin-bottom: $space-md;
   }

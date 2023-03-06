@@ -14,8 +14,8 @@
         </span>
       </div>
     </header>
-    <el-collapse :accordion="true">
-      <el-collapse-item>
+    <el-collapse accordion @change="handleExpandMenu" v-model="activeNames">
+      <el-collapse-item name="1">
         <ul class="menu-list">
           <li class="filter">
             <HeaderFilter />
@@ -69,6 +69,8 @@ import { useRoute } from 'vue-router';
 
 const store = useStore();
 const menuData = ref<IMenu[]>(Menu);
+const route = useRoute();
+const activeNames = ref<string[]>(['']);
 
 const handleExpandMenu = () => {
   const collapseHeader: any = document.querySelector(
@@ -110,6 +112,10 @@ watch(listCategories, () => {
       // console.log(menuData.value);
     }
   }
+});
+
+watch(route, () => {
+  activeNames.value = [''];
 });
 </script>
 

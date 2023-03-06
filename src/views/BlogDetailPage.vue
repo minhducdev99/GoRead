@@ -122,6 +122,16 @@ onMounted(() => {
   }
   &-content {
     width: 100%;
+    p {
+      line-height: 1.5;
+    }
+    :deep img {
+      object-fit: contain;
+      height: auto;
+    }
+    :deep ul {
+      padding-left: $space-md;
+    }
   }
 }
 </style>

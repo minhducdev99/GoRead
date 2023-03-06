@@ -304,8 +304,20 @@ onMounted(async () => {
 }
 </style>
 
-<style>
+<style lang="scss">
+@import '@/styles/_index';
 .el-loading-mask {
   height: calc(100% + 100px);
+}
+
+.ql-snow .ql-editor img {
+  object-fit: contain;
+  height: auto;
+}
+
+@include mobile {
+  .ql-container {
+    height: 430px;
+  }
 }
 </style>

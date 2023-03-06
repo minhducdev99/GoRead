@@ -10,7 +10,7 @@
       >Add blog</el-button
     >
     <el-table :data="tableData" style="width: 100%;">
-      <el-table-column fixed type="index" width="80" label="#" />
+      <el-table-column fixed type="index" width="50" label="#" />
       <el-table-column prop="id" label="ID" width="150" />
       <el-table-column prop="title" label="Title" width="120" />
       <el-table-column
@@ -39,7 +39,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="createdDate" label="Created at" width="100" />
-      <el-table-column fixed="right" width="90">
+      <el-table-column fixed="right" width="85">
         <template v-slot="{ row }">
           <el-button
             type="primary"
@@ -230,7 +230,7 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 @import '@/styles/_index';
-@import '@/styles/_overide';
+
 .admin-blogs {
   padding: $space-md $space-xxl;
   h1 {
@@ -238,6 +238,13 @@ onMounted(() => {
   }
   .btn-add {
     margin-bottom: $space-sm;
+  }
+
+  @include mobile {
+    padding: $space-md $space-sm;
+    :deep .cell {
+      font-size: $small !important;
+    }
   }
 }
 </style>

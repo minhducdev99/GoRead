@@ -222,4 +222,15 @@ onMounted(() => {
 
 <style lang="scss">
 @import '@/styles/_index';
+
+@include mobile {
+  :deep .ql-container {
+    height: 430px;
+  }
+}
+
+:deep .ql-snow .ql-editor img {
+  object-fit: contain;
+  height: auto;
+}
 </style>
